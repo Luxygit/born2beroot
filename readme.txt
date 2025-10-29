@@ -3,15 +3,16 @@ encryp pass: Paddington2
 root pass: idkfaiddqd
 root pass2: Paddington2
 dievarga pass: idkfaiddqd
-dievarga pass2: Idkfaiddqd2
+dievarga pass2: Paddington2
 
 
 virtualbox:
 	downl amd64 debian
 	virtual folder = sgoinfre/dievarga/
-	set virtual disk 8G 
+	set virtual disk 10G 
+	4gb ram - 4 processors
 	controller IDE debian iso
-	network add rule 4242 4242 ports
+	
 partitioning:
 	install WITHOUT GRAPHIC
 	guided use entire disk and set up encryp lvm
@@ -44,7 +45,7 @@ config sudo
 	cat sudo.log
 config apparmor
 	sudo nano /etc/default/grub
-	GRUB_CMDLINE_LINUX="apparmor=1 security apparmor"
+	GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor"
 	sudo update-grub
 	sudo reboot
 installing ssh
@@ -52,11 +53,11 @@ installing ssh
 	sudo nano /etc/ssh/sshd_config
 		Port 4242
 		PermitRootLogin no
+	sudo nano /etc/ssh/ssh_config
+		port 4242
+	sudo service ssh restart
 	(verify: sudo service ssh status
-	which ssh
-	ssh root@localhost -p 4242
-	ssh dievarga@localhost -p 4242
-	)
+	which ssh)
 installing ufw
 	sudo apt install ufw -y
 	sudo ufw enable
@@ -65,18 +66,23 @@ installing ufw
 	sudo ufw status
 	sudo service ufw status
 	sudo ufw status numbered
-	sudo ufw delete *numrule
+	sudo ufw delete *numrule)
 connecting through 4242. ssh connection inside the vm terminal
+	network add rule 4242 4242 ports
 	sudo systemctl restart ssh
+	sudo service ssh restart
 	ssh dievarga@127.0.0.1 -p 4242
 	sudo ss -tulpn | grep 4242
+connecting outside
+	ssh root@localhost -p 4242
+	ssh dievarga@localhost -p 4242
 Set up passwd policy
 	sudo nano /etc/login.defs
 		max-days 30 min-days 2 pass-warn-age 7
 	sudo apt-get install libpam-pwquality -y
 	sudo nano /etc/security/pwquality.conf
-		minlen = 10
 		difok = 7
+		minlen = 10
 		ucredit = -1
 		lcredit = -1
 		dcredit = -1
@@ -98,8 +104,8 @@ Changing pwd
 	sudo chage -M 30 -m 2 -W 7 root
 	sudo chage -l root
 Creating users and groups
-	sudo adduser new_user
-	getent passwd new_user
+	(sudo adduser new_user
+	getent passwd new_user)
 	sudo addgroup user42
 	sudo adduser dievarga user42
 	getent group user42
@@ -121,11 +127,6 @@ Generate signature.txt
 	shasum Born2beRoot.vdi
 	copy hash to signature.txt
 Change hostname
-	sudo nano /etc/hostname
-	sudo nano /etc/hosts
-	sudo reboot
-
-change hostname
 	sudo nano /etc/hostname
 	sudo nano /etc/hosts
 	sudo reboot
