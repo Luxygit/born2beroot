@@ -5,12 +5,17 @@ root pass2: Paddington2
 dievarga pass: idkfaiddqd
 dievarga pass2: Idkfaiddqd2
 
+
 virtualbox:
-	virtual folder = sgoinfre/born2beroot
+	downl amd64 debian
+	virtual folder = sgoinfre/dievarga/
+	set virtual disk 8G 
 	controller IDE debian iso
 	network add rule 4242 4242 ports
 partitioning:
+	install WITHOUT GRAPHIC
 	guided use entire disk and set up encryp lvm
+	cancel deleting data
 	separate home partition
 	set to max
 	finish partitioning and write

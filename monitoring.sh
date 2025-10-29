@@ -28,7 +28,7 @@ ulog=$(users | wc -w)
 ip=$(hostname -I | awk '{print $1}')
 mac=$(ip link show | grep "ether" | awk '{print $2}')
 #Sudo
-cmnd=$(Journalctl _COMM=sudo | grep COMMAND | wc -1)
+cmnd=$(Journalctl _COMM=sudo | grep COMMAND | wc -l)
 
 wall "#Archquitecture: $arch
 #CPU physical : $pcpu
