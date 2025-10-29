@@ -1,3 +1,4 @@
+encryp pass: dievarga42
 encryp pass: Paddington2
 root pass: idkfaiddqd
 root pass2: Paddington2
@@ -26,12 +27,16 @@ config sudo
 	sudo visudo
 		Defaults	passwd_tries=3
 		Defaults	badpass_message="Password is wrong. Please try again."
-		Defaults	logfile="/var/log/sudo.log"
+		Defaults	logfile="/var/log/sudo/sudo.log"
 		Defaults	log_input, log_output
 		Defaults	iolog_dir="/var/log/sudo"
 		Defaults	requiretty
 	sudo mkdir -p /var/log/sudo
 	sudo touch /var/log/sudo/sudo.log
+	(verify
+	sudo su - 
+	cd /var/log/sudo
+	cat sudo.log
 config apparmor
 	sudo nano /etc/default/grub
 	GRUB_CMDLINE_LINUX="apparmor=1 security apparmor"
@@ -42,12 +47,20 @@ installing ssh
 	sudo nano /etc/ssh/sshd_config
 		Port 4242
 		PermitRootLogin no
-	(verify: sudo service ssh status)
+	(verify: sudo service ssh status
+	which ssh
+	ssh root@localhost -p 4242
+	ssh dievarga@localhost -p 4242
+	)
 installing ufw
 	sudo apt install ufw -y
 	sudo ufw enable
 	sudo ufw allow 4242
+	(verify
 	sudo ufw status
+	sudo service ufw status
+	sudo ufw status numbered
+	sudo ufw delete *numrule
 connecting through 4242. ssh connection inside the vm terminal
 	sudo systemctl restart ssh
 	ssh dievarga@127.0.0.1 -p 4242
@@ -56,9 +69,22 @@ Set up passwd policy
 	sudo nano /etc/login.defs
 		max-days 30 min-days 2 pass-warn-age 7
 	sudo apt-get install libpam-pwquality -y
+	sudo nano /etc/security/pwquality.conf
+		minlen = 10
+		difok = 7
+		ucredit = -1
+		lcredit = -1
+		dcredit = -1
+		maxrepeat = 3
+		reject_username
+		enforcing = 1
 	sudo nano /etc/pam.d/common-password
-		passsword	requisite	pam_pwquality.so retry=3 minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root
+		passsword	requisite	pam_pwquality.so retry=3
 	sudo reboot
+	(verify accounts are created but locked without valid password
+	sudo grep user /etc/shadow
+	su newuser)
+	* sudo userdel -r userx
 Changing pwd
 	passwd
 	sudo chage -M 30 -m 2 -W 7 dievarga
@@ -73,6 +99,7 @@ Creating users and groups
 	sudo adduser dievarga user42
 	getent group user42
 	getent group sudo
+	(verify: cat /etc/group)
 Crontab config
 	sudo touch /usr/local/bin/monitoring.sh
 	sudo chmod 755 /usr/local/bin/monitoring.sh
@@ -88,6 +115,10 @@ Generate signature.txt
 	nav to vdi folder in host machine
 	shasum Born2beRoot.vdi
 	copy hash to signature.txt
+Change hostname
+	sudo nano /etc/hostname
+	sudo nano /etc/hosts
+	sudo reboot
 
 change hostname
 	sudo nano /etc/hostname

@@ -3,9 +3,9 @@
 #Architecture
 arch=$(uname -a)
 #CPU physical
-pcpu=$(grep "physical id" /proc/cpuinfo | sort \ uniq | wc -1)
+pcpu=$(grep "physical id" /proc/cpuinfo | wc -l)
 #vCPU
-vcpu=$(grep"˘processor" /proc/cpuinfo | wc -1)
+vcpu=$(grep"processor" /proc/cpuinfo | wc -l)
 #Memory Usage
 ram_total=$(free -m | awk '$1 == "Mem:" {print $2}')
 ram_use=$(free -m | awk '$1 == "Mem:" {print $3}')
@@ -21,7 +21,7 @@ lb=$(who -b | awk '$1 == "system" {print $3 " " $4}')
 #LVM use
 lvmu=$(  if lsblk -o TYPE | grep -iq "^lvm$": then echo yes: else echo no: fi )
 #Connections TCP
-ctcp=$(ss -Ht state established | wc -1)
+ctcp=$(ss -Ht state established | wc -l)
 #user log
 ulog=$(users | wc -w)
 #Network
