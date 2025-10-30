@@ -2,6 +2,7 @@ encryp pass: dievarga42
 encryp pass: Paddington2
 root pass: idkfaiddqd
 root pass2: Paddington2
+root pass3: Idkfaiddqd3
 dievarga pass: idkfaiddqd
 dievarga pass2: Paddington2
 
@@ -68,14 +69,15 @@ installing ufw
 	sudo ufw status numbered
 	sudo ufw delete *numrule)
 connecting through 4242. ssh connection inside the vm terminal
-	network add rule 4242 4242 ports
+	network add rule 2222 4242 ports
+	reopen
 	sudo systemctl restart ssh
 	sudo service ssh restart
 	ssh dievarga@127.0.0.1 -p 4242
 	sudo ss -tulpn | grep 4242
 connecting outside
-	ssh root@localhost -p 4242
-	ssh dievarga@localhost -p 4242
+	ssh root@localhost -p 2222
+	ssh dievarga@127.0.0.1 -p 2222
 Set up passwd policy
 	sudo nano /etc/login.defs
 		max-days 30 min-days 2 pass-warn-age 7
